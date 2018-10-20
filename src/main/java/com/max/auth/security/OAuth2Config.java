@@ -15,6 +15,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
 
+    private static final int TOKEN_TTL_IN_SEC = 10 * 60 * 60; //  10 hours
+
     @Autowired
     public OAuth2Config(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
@@ -27,7 +29,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .withClient("myapp")
                 .secret("611191")
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
-                .scopes("web", "mobile");
+                .scopes("web", "mobile")
+                .accessTokenValiditySeconds(TOKEN_TTL_IN_SEC);
     }
 
     @Override

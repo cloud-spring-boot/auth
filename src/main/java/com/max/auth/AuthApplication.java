@@ -1,5 +1,7 @@
 package com.max.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -19,12 +21,17 @@ import java.util.Map;
 @EnableAuthorizationServer
 public class AuthApplication {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthApplication.class);
+
     /**
      * This endpoint called by protected resources to validate the token and
      * get user information.
      */
     @RequestMapping(value = {"/user"}, produces = "application/json")
     public Map<String, Object> user(OAuth2Authentication user) {
+
+        LOG.info("/user endpoint called");
+
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("user", user.getUserAuthentication().getPrincipal());
         userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getUserAuthentication().getAuthorities()));
