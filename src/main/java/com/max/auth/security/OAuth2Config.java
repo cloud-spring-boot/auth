@@ -30,6 +30,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .secret("611191")
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
                 .scopes("web", "mobile")
+                .authorities("ROLE_ADMIN", "ROLE_USER")
                 .accessTokenValiditySeconds(TOKEN_TTL_IN_SEC);
     }
 
