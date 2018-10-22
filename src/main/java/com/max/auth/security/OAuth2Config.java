@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
@@ -25,12 +26,23 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-                .withClient("myapp")
+
+        final InMemoryClientDetailsServiceBuilder clientDetailsBuilder = clients.inMemory();
+
+        clientDetailsBuilder
+                .withClient("myweb")
                 .secret("611191")
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
-                .scopes("web", "mobile")
+                .scopes("web")
                 .authorities("ROLE_ADMIN", "ROLE_USER")
+                .accessTokenValiditySeconds(TOKEN_TTL_IN_SEC);
+
+        clientDetailsBuilder
+                .withClient("mymobile")
+                .secret("611191")
+                .authorizedGrantTypes("refresh_token", "password", "client_credentials")
+                .scopes("mobile")
+                .authorities("ROLE_USER")
                 .accessTokenValiditySeconds(TOKEN_TTL_IN_SEC);
     }
 

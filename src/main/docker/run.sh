@@ -12,6 +12,9 @@ echo "********************************************************"
 while ! `nc -z config-service $CONFIGSERVER_PORT `; do sleep 3; done
 echo ">>>>>>>>>>>> Configuration Server has started"
 
+nohup tcpdump -A -s 0 'tcp port 3333 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)' \
+-w /usr/local/auth/pcap/auth.pcap &
+
 echo "********************************************************"
 echo "Starting auth "
 echo "********************************************************"
