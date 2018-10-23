@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.config.annotation.builders.InMemoryCl
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -21,24 +20,26 @@ public class JWTOAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     private static final int TOKEN_TTL_IN_SEC = 10 * 60 * 60; //  10 hours
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final UserDetailsService userDetailsService;
+
+    private final TokenStore tokenStore;
+
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
+
+    private final TokenEnhancer jwtTokenEnhancer;
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private TokenStore tokenStore;
-
-    @Autowired
-    private DefaultTokenServices tokenServices;
-
-    @Autowired
-    private JwtAccessTokenConverter jwtAccessTokenConverter;
-
-    @Autowired
-    private TokenEnhancer jwtTokenEnhancer;
-
+    public JWTOAuth2Config(AuthenticationManager authenticationManager, UserDetailsService userDetailsService,
+                           TokenStore tokenStore, JwtAccessTokenConverter jwtAccessTokenConverter,
+                           TokenEnhancer jwtTokenEnhancer) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.tokenStore = tokenStore;
+        this.jwtAccessTokenConverter = jwtAccessTokenConverter;
+        this.jwtTokenEnhancer = jwtTokenEnhancer;
+    }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {

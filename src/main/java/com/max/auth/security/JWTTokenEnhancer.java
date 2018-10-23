@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 public class JWTTokenEnhancer implements TokenEnhancer {
 
@@ -14,9 +15,11 @@ public class JWTTokenEnhancer implements TokenEnhancer {
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         Map<String, Object> additionalInfo = new HashMap<>();
 
-        additionalInfo.put("email", "stepanenkomaksi@gmail.com");
+        additionalInfo.put("email", authentication.getName() + "@gmail.com");
 
-        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+        ((DefaultOAuth2AccessToken) accessToken).
+                setAdditionalInformation(Collections.unmodifiableMap(additionalInfo));
+
         return accessToken;
     }
 }
