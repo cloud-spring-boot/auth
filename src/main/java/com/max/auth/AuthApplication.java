@@ -4,12 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @SpringBootApplication
@@ -25,10 +28,16 @@ public class AuthApplication {
      * get principal information.
      */
     @RequestMapping(value = {"/user"}, produces = "application/json")
-    public Principal user(Principal user) {
+    public Map<String, Object> user(OAuth2Authentication user) {
+
         LOG.info("/user endpoint called");
 
-        return user;
+        Map<String, Object> userInfo = new HashMap<>();
+
+        userInfo.put("user", user.getPrincipal());
+        userInfo.put("authorities", AuthorityUtils.authorityListToSet(user.getAuthorities()));
+
+        return userInfo;
     }
 
     public static void main(String[] args) {
